@@ -26,6 +26,7 @@ function onLoad() {
         splitString = String(event.data).split(" ");
 
         if (splitString[0] == "updatePosition") {
+            console.log('updating position');
             fenString = splitString[1];
             board.position(fenString);
         }
@@ -47,9 +48,8 @@ function setRuyLopezPosition() {
     board.position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R');
 }
 
-function sendPosition() {
-    console.log("sendPosition");
-    fenString = board.fen();
+function sendPosition(fenString) {
+    console.log("sendPosition " + fenString);
     socket.send("userSentNewPosition " + fenString);
 }
 
@@ -59,9 +59,10 @@ function gimmeNewPosition() {
 }
 
 function onDrop (source, target, piece, newPos, oldPos, orientation) {
-    console.log('onDrop');
+
     if (Chessboard.objToFen(newPos) == Chessboard.objToFen(oldPos)) {
-        console.log("ignore drag drop - same position");
+        console.log("ignore drag drop - same position awefawefawef");
+        return;
     }
-    //socket.send("gimmeNewPosition");
+    sendPosition(Chessboard.objToFen(newPos));
 }

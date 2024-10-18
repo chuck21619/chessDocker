@@ -11,40 +11,16 @@ import (
 )
 
 func main(){
-
-    out, err := exec.Command("/bin/python3", "myPythonFile.py", "this is what i passed in").Output()
+    /*
+    out, err := exec.Command("/bin/python3", "myPythonFile.py", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - -").Output()
     if err != nil {
         fmt.Println(err)
         return
     }
+
     fmt.Println("we got an output: ", out)
-    /*
-    out, := exec.Command("/bin/python3", "myPythonFile.py")
-
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Println("Error:", err)
-	}
-
-	fmt.Println(string(output))
-    */
-/*
-    fmt.Println(tf.Version())
-    fmt.Println(tg.NewRoot())
-
-	model := tg.LoadModel("savedSavedModel", []string{"serve"}, nil)
-    fmt.Println(model)
-
-	/*fakeInput, _ := tf.NewTensor("r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R")
-	results := model.Exec([]tf.Output{
-			model.Op("StatefulPartitionedCall", 0),
-	}, map[tf.Output]*tf.Tensor{
-			model.Op("serving_default_inputs_input", 0): fakeInput,
-	})
-
-	predictions := results[0]
-	fmt.Println(predictions.Value())*/
-	
+    fmt.Println("ascii output to string: ", string([]byte(out)))
+	*/
 	fmt.Println("main")
 
 	mux := http.NewServeMux()
@@ -85,9 +61,9 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 
         if splitStrings[0] == "userSentNewPosition" {
-            recievedPosition(splitStrings[1])
+            recievedPosition(ws, splitStrings[1])
         } else if pString == "gimmeNewPosition" {
-            sendNewPosition(ws)
+            sendNewPosition(ws, "8/8/8/8/4P3/8/8/8 b - - 0 1")
         } else {
             fmt.Println("shit dammit missed something")
         }
@@ -99,12 +75,20 @@ var upgrader = websocket.Upgrader{
     WriteBufferSize: 1024,
 }
 
-func recievedPosition(fenString string) {
+func recievedPosition(ws *websocket.Conn, fenString string) {
     fmt.Println("recieved chess position: ", fenString)
+    out, err := exec.Command("/bin/python3", "myPythonFile.py", fenString).Output()
+    if err != nil {
+        fmt.Println("shit fucked up when calculating new position")
+        fmt.Println(err)
+        return
+    }
+    fenAfterCalculation := string([]byte(out))
+    sendNewPosition(ws, fenAfterCalculation)
 }
 
-func sendNewPosition(ws *websocket.Conn) {
-    err := ws.WriteMessage(1, []byte("updatePosition 8/8/8/8/R7/8/8/8"))
+func sendNewPosition(ws *websocket.Conn, fenString string) {
+    err := ws.WriteMessage(1, []byte("updatePosition " + fenString))
     if err != nil {
         fmt.Println(err)
         return

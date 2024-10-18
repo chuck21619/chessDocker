@@ -7,9 +7,43 @@ import (
 	"strings"
 
 	"github.com/gorilla/websocket"
+    "os/exec"
 )
 
 func main(){
+
+    out, err := exec.Command("/bin/python3", "myPythonFile.py", "this is what i passed in").Output()
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Println("we got an output: ", out)
+    /*
+    out, := exec.Command("/bin/python3", "myPythonFile.py")
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	fmt.Println(string(output))
+    */
+/*
+    fmt.Println(tf.Version())
+    fmt.Println(tg.NewRoot())
+
+	model := tg.LoadModel("savedSavedModel", []string{"serve"}, nil)
+    fmt.Println(model)
+
+	/*fakeInput, _ := tf.NewTensor("r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R")
+	results := model.Exec([]tf.Output{
+			model.Op("StatefulPartitionedCall", 0),
+	}, map[tf.Output]*tf.Tensor{
+			model.Op("serving_default_inputs_input", 0): fakeInput,
+	})
+
+	predictions := results[0]
+	fmt.Println(predictions.Value())*/
 	
 	fmt.Println("main")
 

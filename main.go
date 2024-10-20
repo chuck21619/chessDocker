@@ -11,16 +11,6 @@ import (
 )
 
 func main(){
-    /*
-    out, err := exec.Command("/bin/python3", "myPythonFile.py", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - -").Output()
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    fmt.Println("we got an output: ", out)
-    fmt.Println("ascii output to string: ", string([]byte(out)))
-	*/
 	fmt.Println("main")
 
 	mux := http.NewServeMux()
@@ -80,6 +70,7 @@ func recievedPosition(ws *websocket.Conn, fenString string) {
     out, err := exec.Command("/bin/python3", "myPythonFile.py", fenString).Output()
     if err != nil {
         fmt.Println("shit fucked up when calculating new position")
+        sendMessage(ws, "error calculating position")
         fmt.Println(err)
         return
     }
@@ -87,10 +78,14 @@ func recievedPosition(ws *websocket.Conn, fenString string) {
     sendNewPosition(ws, fenAfterCalculation)
 }
 
-func sendNewPosition(ws *websocket.Conn, fenString string) {
-    err := ws.WriteMessage(1, []byte("updatePosition " + fenString))
+func sendMessage(ws *websocket.Conn, msg string) {
+    err := ws.WriteMessage(1, []byte(msg))
     if err != nil {
         fmt.Println(err)
         return
     }
+}
+
+func sendNewPosition(ws *websocket.Conn, fenString string) {
+    sendMessage(ws, "updatePosition " + fenString)
 }

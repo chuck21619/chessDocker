@@ -8,21 +8,25 @@ import sys
 clhboard = clh.clhBoard()
 
 def main():
-
     #python3 ./myPythonFile.py r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R
     if len(sys.argv) > 1:
-        clhboard.set_fen(sys.argv[1])
-    clhboard.turn = chess.BLACK #TODO: always assuming that the player is white for now
+        fenString = sys.argv[1] + " b" #TODO: always assuming that the player is white for now
+        clhboard.set_fen(fenString)
     state = clhboard.state()
 
     q_network = keras.models.load_model('./q_network.keras')
     input = np.expand_dims(state, axis=0)
     output = q_network(input, training=False)
     moveInt = np.argmax(output)
-    move = clhboard.moveFromInteger(moveInt)
-    if move:
+    try:
+        f = open("demofile2.txt", "a")
+        f.write(f"fen before move: {clhboard.fen()}")
+        move = clhboard.moveFromInteger(moveInt)
         clhboard.push(move)
-
-    print(clhboard.fen())
+        f.write(f" fen after move: {clhboard.fen()}")
+        f.close()
+        print(clhboard.fen())
+    except Exception as err:
+        print(err)
 
 main()

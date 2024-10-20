@@ -22,9 +22,15 @@ function onLoad() {
     };
     
     socket.onmessage = event => {
-        console.log("message event: ", event);
-        splitString = String(event.data).split(" ");
+        console.log("message event: ", event.data);
+        stringData = String(event.data);
+        if (stringData.includes("no matching legal move")) {
+            updateOutputMessage("model failed to calculate new position");
+            return;
+        }
+        updateOutputMessage("");
 
+        splitString = stringData.split(" ");
         if (splitString[0] == "updatePosition") {
             console.log('updating position');
             fenString = splitString[1];
@@ -44,24 +50,20 @@ function onLoad() {
     document.getElementById("setStartBtn").onclick = board.start;
 }
 
-function setRuyLopezPosition() {
-    board.position('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R');
-}
-
 function sendPosition(fenString) {
     console.log("sendPosition " + fenString);
     socket.send("userSentNewPosition " + fenString);
+    updateOutputMessage("calculating move...");
 }
 
-function gimmeNewPosition() {
-    console.log("gimmeNewPosition");
-    socket.send("gimmeNewPosition");
+function updateOutputMessage(newMessage) {
+    document.getElementById("output").innerHTML = newMessage;
 }
 
 function onDrop (source, target, piece, newPos, oldPos, orientation) {
 
     if (Chessboard.objToFen(newPos) == Chessboard.objToFen(oldPos)) {
-        console.log("ignore drag drop - same position awefawefawef");
+        console.log("ignore drag drop - same position");
         return;
     }
     sendPosition(Chessboard.objToFen(newPos));

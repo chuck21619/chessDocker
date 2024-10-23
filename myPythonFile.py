@@ -19,12 +19,8 @@ def main():
     output = q_network(input, training=False)
     moveInt = np.argmax(output)
     try:
-        f = open("demofile2.txt", "a")
-        f.write(f"fen before move: {clhboard.fen()}")
         move = clhboard.moveFromInteger(moveInt)
         clhboard.push(move)
-        f.write(f" fen after move: {clhboard.fen()}")
-        f.close()
         print(clhboard.fen())
     except Exception as err:
         print(err)

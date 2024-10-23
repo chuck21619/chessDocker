@@ -43,11 +43,12 @@ function onLoad() {
     };
     
     board = Chessboard('myBoard', config);
-    document.getElementById("myButton").onclick = sendPosition;
-    document.getElementById("gimmeNewPosition").onclick = gimmeNewPosition;
+    document.getElementById("resetBoard").onclick = resetBoard;
+}
 
-    document.getElementById("setRuyLopezBtn").onclick = setRuyLopezPosition;
-    document.getElementById("setStartBtn").onclick = board.start;
+function resetBoard() {
+    board.start();
+    updateOutputMessage("");
 }
 
 function sendPosition(fenString) {

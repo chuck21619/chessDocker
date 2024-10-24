@@ -9,8 +9,10 @@ var config = {
 var socket;
 
 function onLoad() {
-    socket = new WebSocket("ws://localhost:8080/ws");
-    console.log("Attempting Connection...");
+    document.location.host
+    //socket = new WebSocket("ws://localhost:8080/ws");
+    socket = new WebSocket("wss://" + document.location.host + "/ws");
+    console.log("Attempting Connection..." + "wss://" + document.location.host + "/ws");
     
     socket.onopen = () => {
         console.log("Successfully Connected");

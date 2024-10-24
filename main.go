@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+    "os/exec"
 	"strings"
 
 	"github.com/gorilla/websocket"
-    "os/exec"
 )
 
 func main(){
@@ -15,12 +16,21 @@ func main(){
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(".")))
+    port := os.Getenv("PORT")
+    if port == "" {
+            port = "8080"
+            log.Printf("defaulting to port %s", port)
+    } else {
+        log.Printf("port: %v", port)
+    }
+
 	server := http.Server{
-		Addr: ":8080",
+		Addr: ":" + port,
 		Handler: mux,
 	}
 
 	mux.HandleFunc("/ws", wsEndpoint)
+	//err := server.ListenAndServeTLS("server.crt", "server.key")
 	err := server.ListenAndServe()
     log.Fatal(err)
 }
@@ -53,8 +63,6 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 
         if splitStrings[0] == "userSentNewPosition" {
             recievedPosition(ws, splitStrings[1])
-        } else if pString == "gimmeNewPosition" {
-            sendNewPosition(ws, "8/8/8/8/4P3/8/8/8 b - - 0 1")
         } else {
             fmt.Println("shit dammit missed something")
         }

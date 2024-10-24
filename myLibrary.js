@@ -10,9 +10,9 @@ var socket;
 
 function onLoad() {
     document.location.host
-    //socket = new WebSocket("ws://localhost:8080/ws");
+    //TODO: ws if running locally. wss when building container to be hosted on service that manages TLS
+    //socket = new WebSocket("ws://" + document.location.host + "/ws");
     socket = new WebSocket("wss://" + document.location.host + "/ws");
-    console.log("Attempting Connection..." + "wss://" + document.location.host + "/ws");
     
     socket.onopen = () => {
         console.log("Successfully Connected");

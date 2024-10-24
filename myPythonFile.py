@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 import keras
 import chessLibraryHelper as clh
-import chess.pgn
 import sys
 
 clhboard = clh.clhBoard()
@@ -14,7 +13,7 @@ def main():
         clhboard.set_fen(fenString)
     state = clhboard.state()
 
-    q_network = keras.models.load_model('./q_network.keras')
+    q_network = keras.models.load_model('q_network.keras')
     input = np.expand_dims(state, axis=0)
     output = q_network(input, training=False)
     moveInt = np.argmax(output)

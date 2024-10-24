@@ -16,12 +16,13 @@ func main(){
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(".")))
 	server := http.Server{
-		Addr: "localhost:8080",
+		Addr: ":8080",
 		Handler: mux,
 	}
 
 	mux.HandleFunc("/ws", wsEndpoint)
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+    log.Fatal(err)
 }
 
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {

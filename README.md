@@ -1,1 +1,1 @@
-[host](https://chessaifullstack.onrender.com/)
+https://chessaifullstack.onrender.com/

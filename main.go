@@ -12,7 +12,7 @@ import (
 )
 
 func main(){
-	fmt.Println("main-")
+	fmt.Println("main--")
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(".")))
